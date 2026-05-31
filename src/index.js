@@ -87,6 +87,25 @@ app.get("/services", (req, res) => {
 });
 
 
+
+app.get("/services/:id", (req, res) => {
+  const service = services.find(s => s.id === req.params.id);
+
+  if (!service) {
+    return res.status(404).json({
+      ok: false,
+      error: "service not found"
+    });
+  }
+
+  const ranked = rankServices([service])[0];
+
+  res.json({
+    ok: true,
+    service: ranked
+  });
+});
+
 app.post("/services/register", (req, res) => {
   const service = req.body;
 
