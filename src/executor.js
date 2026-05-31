@@ -38,43 +38,16 @@ export async function executeService(service, input) {
       };
     } catch (error) {
       if (error.response && error.response.status === 402) {
-        const paymentRequest = error.response.data;
-
-        const paidResponse = await axios.post(
-          service.endpoint,
-          {
-            input,
-            calledBy: "x402-mcp-hub",
-            serviceId: service.id
-          },
-          {
-            headers: {
-              "X-Payment": JSON.stringify({
-                protocol: "x402",
-                amount: paymentRequest.amount,
-                asset: paymentRequest.asset,
-                payTo: paymentRequest.payTo,
-                network: paymentRequest.network,
-                txHash: "0xsimulatedpayment"
-              })
-            }
-          }
-        );
-
         return {
-          ok: true,
+          ok: false,
           service: service.id,
           payment: {
             required: true,
             protocol: "x402",
-            amount: paymentRequest.amount,
-            asset: paymentRequest.asset,
-            network: paymentRequest.network,
-            status: "paid_after_402_retry",
-            txHash: "0xsimulatedpayment"
+            status: "payment_required",
+            requirements: error.response.data
           },
-          result: paidResponse.data.result,
-          upstream: paidResponse.data
+          error: "x402 payment required"
         };
       }
 
