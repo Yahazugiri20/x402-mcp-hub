@@ -1,57 +1,53 @@
 # x402 MCP Hub
 
-A routing layer where AI agents can discover MCP servers and x402 services, select the best tool, handle payment-gated requests, and return results from a simple mention-style command.
+Status: Work in Progress
 
-## What it does
+## Goal
 
-x402 MCP Hub lets an agent receive a command like:
+Allow agents to discover MCP servers and x402 services, pay for gated tools, and execute them automatically.
 
-@hub summarize https://example.com
+Flow:
 
-Then it:
+X Mention
+→ Intent Detection
+→ Service Discovery
+→ MCP / x402 Routing
+→ Payment (if required)
+→ Tool Execution
+→ Response
 
-1. detects the intent
-2. searches the service registry
-3. selects the best MCP or x402 service
-4. calls the provider
-5. handles 402 payment required flow
-6. retries with payment proof
-7. returns the result
+## Current State
 
-## Demo flow
+### Working
 
-User command:
+- Real x402 provider
+- Real x402 payment execution
+- Service registry
+- Service ranking
+- Provider sync
+- Logs
+- Analytics
+- Real MCP SDK transport
+- Real Base MCP connectivity test
 
-@hub summarize https://example.com
+### Pending
 
-Hub output:
+- Base MCP OAuth authentication
+- Real MCP tool execution
+- X mention listener
+- Automatic reply workflow
 
-- intent: summarize
-- selected service: local-x402-summarizer
-- payment: paid_after_402_retry
-- network: base-sepolia
-- result: paid provider summarized this request
+## Known Limitation
 
-## Run
+Base MCP requires OAuth authentication.
 
-Terminal 1:
+Current probe reaches:
 
-npm run provider
+https://mcp.base.org
 
-Terminal 2:
+but returns:
 
-npm run dev
+invalid_token
 
-Terminal 3:
+until a valid OAuth session is available.
 
-curl -X POST http://localhost:3001/invoke \
--H "Content-Type: application/json" \
--d '{"text":"@hub summarize https://example.com"}'
-
-## Core idea
-
-Agents should not need to know every endpoint, API, MCP server, or payment flow.
-
-They should just ask for a task.
-
-The hub handles discovery, routing, payment, execution, and response.
