@@ -19,42 +19,71 @@ app.use(
         config: {
           description: "Summarize text or URLs through x402 payment"
         }
+      },
+      "/write-tweet": {
+        price: "$0.005",
+        network: "base-sepolia",
+        config: {
+          description: "Write a short social post through x402 payment"
+        }
       }
     }
   )
 );
 
 async function registerToHub() {
-  const service = {
-    id: "real-x402-summarizer",
-    type: "x402",
-    tags: ["summarize", "summary", "url", "article"],
-    price: 0.01,
-    latency: 180,
-    reputation: 98,
-    endpoint: "http://localhost:5000/summarize"
-  };
+  const services = [
+    {
+      id: "real-x402-summarizer",
+      type: "x402",
+      tags: ["summarize", "summary", "url", "article"],
+      price: 0.01,
+      latency: 180,
+      reputation: 98,
+      endpoint: "http://localhost:5000/summarize"
+    },
+    {
+      id: "free-mcp-researcher",
+      type: "mcp",
+      tags: ["research", "search", "docs"],
+      price: 0,
+      latency: 260,
+      reputation: 94,
+      endpoint: "http://localhost:5000/research"
+    },
+    {
+      id: "paid-x402-tweet-writer",
+      type: "x402",
+      tags: ["write", "tweet", "post", "content"],
+      price: 0.005,
+      latency: 220,
+      reputation: 95,
+      endpoint: "http://localhost:5000/write-tweet"
+    }
+  ];
 
-  try {
-    await axios.post("http://localhost:3001/services/register", service);
-    console.log("registered to hub:", service.id);
-  } catch (error) {
-    console.log("hub registration failed:", error.message);
+  for (const service of services) {
+    try {
+      await axios.post("http://localhost:3001/services/register", service);
+      console.log("registered to hub:", service.id);
+    } catch (error) {
+      console.log("hub registration failed:", service.id, error.message);
+    }
   }
 }
 
 app.get("/", (req, res) => {
   res.json({
-    name: "real x402 provider",
+    name: "multi-tool x402 MCP provider",
     status: "online",
     payTo: PAY_TO,
-    routes: ["/summarize"]
+    routes: ["/summarize", "/research", "/write-tweet", "/mcp/tools"]
   });
 });
 
 app.get("/mcp/tools", (req, res) => {
   res.json({
-    provider: "real-x402-provider",
+    provider: "multi-tool-x402-provider",
     tools: [
       {
         name: "summarize",
@@ -63,6 +92,22 @@ app.get("/mcp/tools", (req, res) => {
         type: "x402",
         price: 0.01,
         tags: ["summarize", "summary", "url", "article"]
+      },
+      {
+        name: "research",
+        description: "Research docs, links, or topics for an agent",
+        endpoint: "http://localhost:5000/research",
+        type: "mcp",
+        price: 0,
+        tags: ["research", "search", "docs"]
+      },
+      {
+        name: "write-tweet",
+        description: "Write a short post through real x402-express middleware",
+        endpoint: "http://localhost:5000/write-tweet",
+        type: "x402",
+        price: 0.005,
+        tags: ["write", "tweet", "post", "content"]
       }
     ]
   });
@@ -73,13 +118,35 @@ app.post("/summarize", (req, res) => {
 
   res.json({
     ok: true,
-    provider: "real-x402-provider",
+    provider: "multi-tool-x402-provider",
     tool: "summarize",
-    result: `real x402 protected summarizer received: ${input}`
+    result: `summary: ${input} is a request routed through a paid x402 service.`
+  });
+});
+
+app.post("/research", (req, res) => {
+  const { input } = req.body;
+
+  res.json({
+    ok: true,
+    provider: "multi-tool-x402-provider",
+    tool: "research",
+    result: `research brief: ${input} points to an agent workflow using MCP discovery, service routing, and optional x402 payment.`
+  });
+});
+
+app.post("/write-tweet", (req, res) => {
+  const { input } = req.body;
+
+  res.json({
+    ok: true,
+    provider: "multi-tool-x402-provider",
+    tool: "write-tweet",
+    result: `built an x402 mcp hub where agents discover tools, pay for calls, and execute services from simple commands`
   });
 });
 
 app.listen(5000, async () => {
-  console.log("real x402 provider running on http://localhost:5000");
+  console.log("multi-tool x402 provider running on http://localhost:5000");
   await registerToHub();
 });

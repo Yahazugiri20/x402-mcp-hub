@@ -7,6 +7,7 @@ import { searchMarketplace } from "./marketplace.js";
 import { addLog, getLogs } from "./logs.js";
 import { checkServiceHealth } from "./health.js";
 import { probeMcpServer } from "./mcpClient.js";
+import { registerProvider, getProviders } from "./providers.js";
 
 const app = express();
 app.use(cors());
@@ -47,6 +48,35 @@ app.post("/mcp/probe", async (req, res) => {
       ok: false,
       endpoint,
       error: error.response?.data || error.message
+    });
+  }
+});
+
+
+app.get("/providers", (req, res) => {
+  res.json({ providers: getProviders() });
+});
+
+app.post("/providers/register", async (req, res) => {
+  const { url } = req.body;
+
+  if (!url) {
+    return res.status(400).json({
+      ok: false,
+      error: "url is required"
+    });
+  }
+
+  try {
+    const result = await registerProvider(url);
+    res.json({
+      ok: true,
+      ...result
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: error.message
     });
   }
 });

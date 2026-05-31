@@ -1,0 +1,13 @@
+[
+  {
+    "id": "provider-1",
+    "url": "http://localhost:5000",
+    "status": "online",
+    "lastSync": "2026-05-31T19:38:43.621Z",
+    "tools": [
+      "multi-tool-x402-provider-summarize",
+      "multi-tool-x402-provider-research",
+      "multi-tool-x402-provider-write-tweet"
+    ]
+  }
+]
