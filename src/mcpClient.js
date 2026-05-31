@@ -19,7 +19,7 @@ export async function mcpPost(endpoint, payload, token = "") {
 }
 
 export async function probeMcpServer(endpoint, token = "") {
-  const initializePayload = {
+  const init = await mcpPost(endpoint, {
     jsonrpc: "2.0",
     id: 1,
     method: "initialize",
@@ -33,9 +33,7 @@ export async function probeMcpServer(endpoint, token = "") {
         version: "0.1.0"
       }
     }
-  };
-
-  const init = await mcpPost(endpoint, initializePayload, token);
+  }, token);
 
   try {
     await mcpPost(endpoint, {
