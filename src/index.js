@@ -10,6 +10,7 @@ import { probeMcpServer } from "./mcpClient.js";
 import { registerProvider, getProviders, syncProviders } from "./providers.js";
 import { rankServices } from "./scoring.js";
 import { getAnalytics } from "./analytics.js";
+import { probeBaseMcp } from "./baseMcpClient.js";
 
 const app = express();
 app.use(cors());
@@ -95,6 +96,29 @@ app.post("/providers/register", async (req, res) => {
     res.status(500).json({
       ok: false,
       error: error.message
+    });
+  }
+});
+
+
+app.post("/base-mcp/probe", async (req, res) => {
+  try {
+    const token = req.body.token || process.env.BASE_MCP_TOKEN || "";
+    const tools = await probeBaseMcp({ token });
+
+    res.json({
+      ok: true,
+      provider: "base-mcp-official",
+      tools
+    });
+  } catch (error) {
+    const message = error.message || "Base MCP probe failed";
+
+    res.status(401).json({
+      ok: false,
+      provider: "base-mcp-official",
+      status: "oauth_required",
+      error: message
     });
   }
 });
