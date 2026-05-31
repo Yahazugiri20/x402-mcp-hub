@@ -92,5 +92,23 @@
     "latency": 300,
     "reputation": 90,
     "endpoint": "http://localhost:4001/research"
+  },
+  {
+    "id": "base-mcp-official",
+    "type": "mcp",
+    "tags": [
+      "base",
+      "wallet",
+      "balance",
+      "portfolio",
+      "send",
+      "swap",
+      "x402",
+      "onchain"
+    ],
+    "price": 0,
+    "latency": 500,
+    "reputation": 99,
+    "endpoint": "https://mcp.base.org"
   }
 ]
