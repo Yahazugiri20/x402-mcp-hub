@@ -25,9 +25,7 @@ export async function probeMcpServer(endpoint, token = "") {
     method: "initialize",
     params: {
       protocolVersion: "2025-03-26",
-      capabilities: {
-        tools: {}
-      },
+      capabilities: { tools: {} },
       clientInfo: {
         name: "x402-mcp-hub",
         version: "0.1.0"
