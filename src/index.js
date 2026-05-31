@@ -7,7 +7,7 @@ import { searchMarketplace } from "./marketplace.js";
 import { addLog, getLogs } from "./logs.js";
 import { checkServiceHealth } from "./health.js";
 import { probeMcpServer } from "./mcpClient.js";
-import { registerProvider, getProviders } from "./providers.js";
+import { registerProvider, getProviders, syncProviders } from "./providers.js";
 import { rankServices } from "./scoring.js";
 import { getAnalytics } from "./analytics.js";
 
@@ -57,6 +57,22 @@ app.post("/mcp/probe", async (req, res) => {
 
 app.get("/providers", (req, res) => {
   res.json({ providers: getProviders() });
+});
+
+
+app.post("/providers/sync", async (req, res) => {
+  try {
+    const results = await syncProviders();
+    res.json({
+      ok: true,
+      results
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
 });
 
 app.post("/providers/register", async (req, res) => {

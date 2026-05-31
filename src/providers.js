@@ -77,3 +77,36 @@ export async function importProviderTools(url) {
 
   return imported;
 }
+
+export async function syncProviders() {
+  const providers = getProviders();
+  const results = [];
+
+  for (const provider of providers) {
+    try {
+      const imported = await importProviderTools(provider.url);
+
+      provider.status = "online";
+      provider.lastSync = new Date().toISOString();
+      provider.tools = imported.map(tool => tool.id);
+
+      results.push({
+        url: provider.url,
+        ok: true,
+        imported: imported.length
+      });
+    } catch (error) {
+      provider.status = "offline";
+      provider.lastSync = new Date().toISOString();
+
+      results.push({
+        url: provider.url,
+        ok: false,
+        error: error.message
+      });
+    }
+  }
+
+  saveProviders(providers);
+  return results;
+}
