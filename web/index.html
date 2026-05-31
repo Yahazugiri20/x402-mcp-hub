@@ -214,16 +214,31 @@ async function loadProviders() {
 }
 
 async function loadMarketplace() {
-  const res = await fetch(`${api}/services`);
-  const data = await res.json();
-  document.getElementById("marketplace").innerHTML = data.services.map(s => `
-    <div class="service">
-      <h3>${s.id}</h3>
-      <div class="muted">${s.type} | score ${s.score ?? "n/a"}</div>
-      <div class="muted">$${s.price} | ${s.latency}ms | rep ${s.reputation}</div>
-      <div>${s.tags.map(t => `<span class="pill">${t}</span>`).join(" ")}</div>
-    </div>
-  `).join("");
+  const serviceRes = await fetch(`${api}/services`);
+  const serviceData = await serviceRes.json();
+
+  let healthMap = {};
+  try {
+    const healthRes = await fetch(`${api}/health/services`);
+    const healthData = await healthRes.json();
+    healthMap = Object.fromEntries(healthData.results.map(h => [h.id, h]));
+  } catch {}
+
+  document.getElementById("marketplace").innerHTML = serviceData.services.map(s => {
+    const h = healthMap[s.id];
+    const health = h?.ok ? "online" : "offline";
+    const color = h?.ok ? "#86efac" : "#fca5a5";
+
+    return `
+      <div class="service">
+        <h3>${s.id}</h3>
+        <div class="muted">${s.type} | score ${s.score ?? "n/a"}</div>
+        <div class="muted">$${s.price} | ${s.latency}ms | rep ${s.reputation}</div>
+        <div class="muted" style="color:${color};font-weight:800;">${health}</div>
+        <div>${s.tags.map(t => `<span class="pill">${t}</span>`).join(" ")}</div>
+      </div>
+    `;
+  }).join("");
 }
 
 loadMarketplace();
