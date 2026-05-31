@@ -1,5 +1,6 @@
 import axios from "axios";
 import { services } from "./registry.js";
+import { rankServices } from "./scoring.js";
 
 export function detectIntent(text = "") {
   const lower = text.toLowerCase();
@@ -40,9 +41,5 @@ export async function chooseService(intent) {
 
   if (!onlineCandidates.length) return null;
 
-  return onlineCandidates.sort((a, b) => {
-    const scoreA = a.reputation - a.price * 100 - a.latency / 100;
-    const scoreB = b.reputation - b.price * 100 - b.latency / 100;
-    return scoreB - scoreA;
-  })[0];
+  return rankServices(onlineCandidates)[0];
 }

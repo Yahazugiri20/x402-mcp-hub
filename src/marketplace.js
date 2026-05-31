@@ -1,9 +1,10 @@
 import { services } from "./registry.js";
+import { rankServices } from "./scoring.js";
 
 export function searchMarketplace(query = "") {
   const lower = query.toLowerCase();
 
-  return services
+  const results = services
     .filter(service => {
       return (
         service.id.toLowerCase().includes(lower) ||
@@ -11,5 +12,7 @@ export function searchMarketplace(query = "") {
         service.tags.some(tag => tag.includes(lower))
       );
     })
-    .sort((a, b) => b.reputation - a.reputation);
+    ;
+
+  return rankServices(results);
 }
