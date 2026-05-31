@@ -36,3 +36,9 @@ export function addLog(entry) {
 export function getLogs() {
   return loadLogs();
 }
+
+
+export function clearLogs() {
+  saveLogs([]);
+  return [];
+}

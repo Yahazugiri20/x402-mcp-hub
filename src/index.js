@@ -4,7 +4,7 @@ import { services, registerService } from "./registry.js";
 import { detectIntent, chooseService, getCandidateServices } from "./router.js";
 import { executeService } from "./executor.js";
 import { searchMarketplace } from "./marketplace.js";
-import { addLog, getLogs } from "./logs.js";
+import { addLog, getLogs, clearLogs } from "./logs.js";
 import { checkServiceHealth } from "./health.js";
 import { probeMcpServer } from "./mcpClient.js";
 import { registerProvider, getProviders, syncProviders } from "./providers.js";
@@ -252,6 +252,15 @@ app.get("/analytics", (req, res) => {
   res.json({
     ok: true,
     analytics: getAnalytics()
+  });
+});
+
+
+app.delete("/logs", (req, res) => {
+  clearLogs();
+  res.json({
+    ok: true,
+    logs: []
   });
 });
 

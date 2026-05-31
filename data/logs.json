@@ -1,17 +1,1 @@
-[
-  {
-    "id": 1,
-    "time": "2026-05-31T20:05:46.047Z",
-    "source": "api",
-    "input": "@hub research vvvkernel docs",
-    "intent": "research",
-    "service": "free-mcp-researcher",
-    "serviceType": "mcp",
-    "payment": {
-      "required": false,
-      "status": "free_service"
-    },
-    "ok": true,
-    "result": "research brief: @hub research vvvkernel docs points to an agent workflow using MCP discovery, service routing, and optional x402 payment."
-  }
-]
+[]
