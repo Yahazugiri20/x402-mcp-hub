@@ -1,0 +1,196 @@
+[
+  {
+    "id": "local-x402-summarizer",
+    "type": "x402",
+    "tags": [
+      "summarize",
+      "summary",
+      "url",
+      "article"
+    ],
+    "price": 0.01,
+    "latency": 200,
+    "reputation": 96,
+    "endpoint": "http://localhost:4001/summarize"
+  },
+  {
+    "id": "local-mcp-researcher",
+    "type": "mcp",
+    "tags": [
+      "research",
+      "search",
+      "docs"
+    ],
+    "price": 0,
+    "latency": 350,
+    "reputation": 91,
+    "endpoint": "http://localhost:4001/research"
+  },
+  {
+    "id": "tweet-writer-service",
+    "type": "mcp",
+    "tags": [
+      "write",
+      "tweet",
+      "post"
+    ],
+    "price": 0,
+    "latency": 420,
+    "reputation": 87,
+    "endpoint": "http://localhost:4001/research"
+  },
+  {
+    "id": "auto-x402-summarizer",
+    "type": "x402",
+    "tags": [
+      "summarize",
+      "summary",
+      "url",
+      "article"
+    ],
+    "price": 0.01,
+    "latency": 180,
+    "reputation": 97,
+    "endpoint": "http://localhost:4001/summarize"
+  },
+  {
+    "id": "auto-mcp-researcher",
+    "type": "mcp",
+    "tags": [
+      "research",
+      "search",
+      "docs"
+    ],
+    "price": 0,
+    "latency": 320,
+    "reputation": 93,
+    "endpoint": "http://localhost:4001/research"
+  },
+  {
+    "id": "auto-mcp-provider-summarize",
+    "type": "x402",
+    "tags": [
+      "summarize",
+      "summary",
+      "url",
+      "article"
+    ],
+    "price": 0.01,
+    "latency": 300,
+    "reputation": 90,
+    "endpoint": "http://localhost:4001/summarize"
+  },
+  {
+    "id": "auto-mcp-provider-research",
+    "type": "mcp",
+    "tags": [
+      "research",
+      "search",
+      "docs"
+    ],
+    "price": 0,
+    "latency": 300,
+    "reputation": 90,
+    "endpoint": "http://localhost:4001/research"
+  },
+  {
+    "id": "base-mcp-official",
+    "type": "mcp",
+    "tags": [
+      "base",
+      "wallet",
+      "balance",
+      "portfolio",
+      "send",
+      "swap",
+      "x402",
+      "onchain"
+    ],
+    "price": 0,
+    "latency": 500,
+    "reputation": 99,
+    "endpoint": "https://mcp.base.org"
+  },
+  {
+    "id": "real-x402-summarizer",
+    "type": "x402",
+    "tags": [
+      "summarize",
+      "summary",
+      "url",
+      "article"
+    ],
+    "price": 0.01,
+    "latency": 180,
+    "reputation": 98,
+    "endpoint": "http://localhost:5000/summarize"
+  },
+  {
+    "id": "free-mcp-researcher",
+    "type": "mcp",
+    "tags": [
+      "research",
+      "search",
+      "docs"
+    ],
+    "price": 0,
+    "latency": 260,
+    "reputation": 94,
+    "endpoint": "http://localhost:5000/research"
+  },
+  {
+    "id": "paid-x402-tweet-writer",
+    "type": "x402",
+    "tags": [
+      "write",
+      "tweet",
+      "post",
+      "content"
+    ],
+    "price": 0.005,
+    "latency": 220,
+    "reputation": 95,
+    "endpoint": "http://localhost:5000/write-tweet"
+  },
+  {
+    "id": "multi-tool-x402-provider-summarize",
+    "type": "x402",
+    "tags": [
+      "summarize",
+      "summary",
+      "url",
+      "article"
+    ],
+    "price": 0.01,
+    "latency": 300,
+    "reputation": 90,
+    "endpoint": "http://localhost:5000/summarize"
+  },
+  {
+    "id": "multi-tool-x402-provider-research",
+    "type": "mcp",
+    "tags": [
+      "research",
+      "search",
+      "docs"
+    ],
+    "price": 0,
+    "latency": 300,
+    "reputation": 90,
+    "endpoint": "http://localhost:5000/research"
+  },
+  {
+    "id": "multi-tool-x402-provider-write-tweet",
+    "type": "x402",
+    "tags": [
+      "write",
+      "tweet",
+      "post",
+      "content"
+    ],
+    "price": 0.005,
+    "latency": 300,
+    "reputation": 90,
+    "endpoint": "http://localhost:5000/write-tweet"
+  }
+]
