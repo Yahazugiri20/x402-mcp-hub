@@ -9,6 +9,7 @@ import { checkServiceHealth } from "./health.js";
 import { probeMcpServer } from "./mcpClient.js";
 import { registerProvider, getProviders } from "./providers.js";
 import { rankServices } from "./scoring.js";
+import { getAnalytics } from "./analytics.js";
 
 const app = express();
 app.use(cors());
@@ -203,6 +204,14 @@ app.post("/x/mention", async (req, res) => {
 
 app.get("/x/mentions", (req, res) => {
   res.json({ mentions });
+});
+
+
+app.get("/analytics", (req, res) => {
+  res.json({
+    ok: true,
+    analytics: getAnalytics()
+  });
 });
 
 app.get("/logs", (req, res) => {
