@@ -6,6 +6,7 @@ import { executeService } from "./executor.js";
 import { searchMarketplace } from "./marketplace.js";
 import { addLog, getLogs } from "./logs.js";
 import { checkServiceHealth } from "./health.js";
+import { probeMcpServer } from "./mcpClient.js";
 
 const app = express();
 app.use(cors());
@@ -20,6 +21,34 @@ app.get("/", (req, res) => {
     idea: "agents discover MCP servers and invoke x402 services through one routing layer",
     routes: ["/services", "/marketplace/search", "/invoke", "/x/mention", "/x/mentions", "/logs"]
   });
+});
+
+
+app.post("/mcp/probe", async (req, res) => {
+  const endpoint = req.body.endpoint;
+
+  if (!endpoint) {
+    return res.status(400).json({
+      ok: false,
+      error: "endpoint is required"
+    });
+  }
+
+  try {
+    const token = req.body.token || "";
+    const result = await probeMcpServer(endpoint, token);
+    res.json({
+      ok: true,
+      endpoint,
+      result
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      endpoint,
+      error: error.response?.data || error.message
+    });
+  }
 });
 
 app.get("/services", (req, res) => {
