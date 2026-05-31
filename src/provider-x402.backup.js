@@ -17,7 +17,7 @@ app.use(
         price: "$0.01",
         network: "base-sepolia",
         config: {
-          description: "Summarize text or URLs through real x402 payment"
+          description: "Summarize text or URLs through x402 payment"
         }
       }
     }
@@ -28,12 +28,11 @@ async function registerToHub() {
   const service = {
     id: "real-x402-summarizer",
     type: "x402",
-    tags: ["summarize", "summary", "url", "article", "x402"],
+    tags: ["summarize", "summary", "url", "article"],
     price: 0.01,
     latency: 180,
     reputation: 98,
-    endpoint: "http://localhost:5000/summarize",
-    status: "online"
+    endpoint: "http://localhost:5000/summarize"
   };
 
   try {
@@ -48,7 +47,24 @@ app.get("/", (req, res) => {
   res.json({
     name: "real x402 provider",
     status: "online",
+    payTo: PAY_TO,
     routes: ["/summarize"]
+  });
+});
+
+app.get("/mcp/tools", (req, res) => {
+  res.json({
+    provider: "real-x402-provider",
+    tools: [
+      {
+        name: "summarize",
+        description: "Summarize a URL or text through real x402-express middleware",
+        endpoint: "http://localhost:5000/summarize",
+        type: "x402",
+        price: 0.01,
+        tags: ["summarize", "summary", "url", "article"]
+      }
+    ]
   });
 });
 
@@ -59,7 +75,7 @@ app.post("/summarize", (req, res) => {
     ok: true,
     provider: "real-x402-provider",
     tool: "summarize",
-    result: `real x402 service executed for: ${input}`
+    result: `real x402 protected summarizer received: ${input}`
   });
 });
 

@@ -1,0 +1,11 @@
+
+> x402-mcp-hub@1.0.0 web
+> vite --host 0.0.0.0 web
+
+
+  VITE v8.0.14  ready in 158 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://10.255.255.254:5173/
+  ➜  Network: http://172.27.249.254:5173/
+3:13:30 AM [vite] (client) page reload index.html

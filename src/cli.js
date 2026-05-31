@@ -9,7 +9,7 @@ const rl = readline.createInterface({
 
 console.log("");
 console.log("x402 MCP Hub CLI");
-console.log("type fake X mention, example:");
+console.log("type agent command, example:");
 console.log("@agent summarize https://example.com");
 console.log("");
 

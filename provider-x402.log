@@ -1,0 +1,8 @@
+
+> x402-mcp-hub@1.0.0 provider:x402
+> node src/provider-x402.js
+
+multi-tool x402 provider running on http://localhost:5000
+registered to hub: real-x402-summarizer
+registered to hub: free-mcp-researcher
+registered to hub: paid-x402-tweet-writer

@@ -216,7 +216,7 @@ app.post("/x/mention", async (req, res) => {
 
   const mention = {
     id: mentions.length + 1,
-    source: "fake_x",
+    source: "manual_x_simulator",
     text,
     intent,
     selectedService,
@@ -229,7 +229,7 @@ app.post("/x/mention", async (req, res) => {
   mentions.push(mention);
 
   const log = addLog({
-    source: "fake_x",
+    source: "manual_x_simulator",
     input: text,
     intent,
     service: selectedService?.id || null,

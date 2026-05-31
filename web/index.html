@@ -1,248 +1,312 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>x402 MCP Hub</title>
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      background: #070a12;
-      color: #e5e7eb;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,.25), transparent 30%),
+        radial-gradient(circle at top right, rgba(22,163,74,.15), transparent 28%),
+        #050816;
+      color: #f8fafc;
       font-family: Inter, Arial, sans-serif;
     }
-    .wrap { max-width: 1180px; margin: auto; padding: 36px 20px; }
+    .wrap { max-width: 1180px; margin: auto; padding: 42px 20px; }
     .hero {
-      background: linear-gradient(135deg, #111827, #0f172a);
-      border: 1px solid #1f2937;
-      border-radius: 28px;
-      padding: 28px;
-      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 24px;
     }
     .badge {
-      display:inline-block; padding:6px 10px; border-radius:999px;
-      background:#172554; color:#bfdbfe; font-size:12px; font-weight:700;
-      margin-bottom:12px;
+      display:inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(37,99,235,.18);
+      border: 1px solid rgba(96,165,250,.35);
+      color:#bfdbfe;
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:16px;
     }
-    h1 { font-size: 44px; margin: 0 0 8px; }
-    h2 { margin: 0 0 14px; }
-    p { color: #9ca3af; margin: 0; line-height: 1.5; }
-    .grid { display:grid; grid-template-columns: 1.1fr .9fr; gap:18px; }
-    .card {
-      background:#111827; border:1px solid #1f2937;
-      border-radius:22px; padding:20px; margin-bottom:18px;
+    h1 { font-size: 58px; line-height: .95; margin: 0 0 18px; letter-spacing: -2px; }
+    p { color:#94a3b8; line-height:1.6; font-size:16px; }
+    .heroCard, .panel {
+      background: rgba(15,23,42,.72);
+      border: 1px solid rgba(148,163,184,.16);
+      border-radius: 28px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.35);
+      backdrop-filter: blur(16px);
     }
+    .heroCard { padding: 24px; }
+    .panel { padding: 22px; margin-bottom: 18px; }
+    .stats {
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .stat {
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(2,6,23,.6);
+      border: 1px solid rgba(148,163,184,.12);
+    }
+    .stat b { display:block; font-size:24px; }
+    .stat span { color:#94a3b8; font-size:12px; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:18px; }
     input {
-      width:100%; padding:14px; border-radius:14px;
-      border:1px solid #374151; background:#030712; color:white;
-      font-size:15px;
+      width:100%;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,.2);
+      background:#020617;
+      color:white;
+      font-size:16px;
+      outline:none;
     }
     button {
-      padding:12px 16px; border:0; border-radius:14px;
-      background:#2563eb; color:white; font-weight:800; cursor:pointer;
-      margin-top:12px; margin-right:8px;
+      border:0;
+      border-radius: 16px;
+      padding: 13px 17px;
+      background:#2563eb;
+      color:white;
+      font-weight:900;
+      cursor:pointer;
+      margin-top:12px;
+      margin-right:8px;
     }
-    button.secondary { background:#1f2937; }
-    .flow { display:grid; grid-template-columns: repeat(5, 1fr); gap:10px; margin-top:20px; }
+    button.secondary { background:#1e293b; color:#cbd5e1; }
+    .flow { display:grid; grid-template-columns: repeat(5, 1fr); gap:10px; margin-top:18px; }
     .step {
-      border:1px solid #1f2937; background:#030712;
-      border-radius:16px; padding:14px; text-align:center;
-      color:#6b7280; font-size:13px; font-weight:700;
+      background:#020617;
+      border:1px solid rgba(148,163,184,.14);
+      color:#64748b;
+      border-radius:18px;
+      padding:14px 10px;
+      text-align:center;
+      font-size:13px;
+      font-weight:900;
     }
-    .step.on { border-color:#2563eb; color:#dbeafe; }
-    .step.ok { border-color:#16a34a; color:#bbf7d0; }
-    .resultBox {
-      background:#030712; border:1px solid #1f2937;
-      border-radius:18px; padding:16px; min-height:120px;
-      white-space:pre-wrap; word-break:break-word;
+    .step.ok { border-color:#22c55e; color:#bbf7d0; background:rgba(22,163,74,.12); }
+    .step.skip { border-color:#64748b; color:#cbd5e1; }
+    .result {
+      min-height: 170px;
+      background:#020617;
+      border:1px solid rgba(148,163,184,.14);
+      border-radius:22px;
+      padding:18px;
+      margin-top:12px;
     }
-    .kv { display:grid; grid-template-columns: 140px 1fr; gap:8px; margin:8px 0; }
-    .k { color:#9ca3af; }
-    .v { color:#fff; word-break:break-word; }
-    .success { color:#86efac; font-weight:800; }
-    .fail { color:#fca5a5; font-weight:800; }
-    .pill {
-      display:inline-block; padding:5px 9px; border-radius:999px;
-      background:#030712; border:1px solid #374151; margin:3px;
-      font-size:12px; color:#cbd5e1;
-    }
-    .services { display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; }
+    .label { color:#94a3b8; font-size:12px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px; }
+    .success { color:#86efac; font-weight:900; }
+    .fail { color:#fca5a5; font-weight:900; }
+    .row { display:grid; grid-template-columns: 120px 1fr; gap:10px; margin:10px 0; }
+    .k { color:#64748b; }
+    .v { color:#e2e8f0; word-break:break-word; }
+    .services { display:grid; grid-template-columns: 1fr; gap:10px; margin-top:12px; }
     .service {
-      background:#030712; border:1px solid #1f2937;
-      border-radius:16px; padding:14px;
+      padding:14px;
+      border-radius:18px;
+      background:#020617;
+      border:1px solid rgba(148,163,184,.14);
     }
-    .service h3 { margin:0 0 8px; font-size:15px; }
-    .muted { color:#9ca3af; font-size:13px; }
+    .serviceTop { display:flex; justify-content:space-between; gap:10px; align-items:center; }
+    .service h3 { margin:0; font-size:15px; }
+    .pill {
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      background:#0f172a;
+      border:1px solid rgba(148,163,184,.14);
+      color:#cbd5e1;
+      font-size:11px;
+      margin:6px 4px 0 0;
+    }
+    .online { color:#86efac; font-weight:900; }
+    .offline { color:#fca5a5; font-weight:900; }
+    .muted { color:#94a3b8; font-size:13px; }
     a { color:#93c5fd; text-decoration:none; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="hero">
-      <div class="badge">real x402 payment flow</div>
-      <h1>x402 MCP Hub</h1>
-      <p>Agents discover MCP and x402 services, select the best provider, pay for gated tools on Base Sepolia, and execute the result automatically.</p>
+<div class="wrap">
+  <section class="hero">
+    <div>
+      <div class="badge">x402 payments + MCP service discovery</div>
+      <h1>tool routing layer for AI agents</h1>
+      <p>Agents send one simple command. The hub discovers the right MCP or x402 service, ranks providers, handles payment, executes the tool, and returns the result.</p>
+      <div class="stats">
+        <div class="stat"><b id="stProviders">-</b><span>providers</span></div>
+        <div class="stat"><b id="stServices">-</b><span>services</span></div>
+        <div class="stat"><b id="stPaid">-</b><span>x402 payments</span></div>
+      </div>
+    </div>
+    <div class="heroCard">
+      <div class="label">Live agent command</div>
+      <input id="mention" value="@hub summarize https://example.com" />
+      <button onclick="invoke()">run agent</button>
+      <button class="secondary" onclick="setCmd('@hub research base agent docs')">free mcp</button>
+      <button class="secondary" onclick="setCmd('@hub write tweet about x402 mcp hub')">paid x402</button>
       <div class="flow">
-        <div id="s1" class="step">Intent</div>
-        <div id="s2" class="step">Marketplace</div>
-        <div id="s3" class="step">402 Payment</div>
-        <div id="s4" class="step">X-PAYMENT</div>
-        <div id="s5" class="step">Execution</div>
+        <div id="s1" class="step">intent</div>
+        <div id="s2" class="step">rank</div>
+        <div id="s3" class="step">402</div>
+        <div id="s4" class="step">pay</div>
+        <div id="s5" class="step">execute</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <div>
+      <div class="panel">
+        <div class="label">Execution</div>
+        <div id="summary" class="result">waiting for command...</div>
+      </div>
+      <div class="panel">
+        <div class="label">Payment proof</div>
+        <div id="payment" class="result">no payment yet</div>
       </div>
     </div>
 
-    <div class="grid">
-      <div>
-        <div class="card">
-          <h2>Agent command</h2>
-          <input id="mention" value="@hub summarize https://example.com" />
-          <button onclick="invoke()">Run agent</button>
-          <button class="secondary" onclick="setCmd('@hub research vvvkernel docs')">Research</button>
-          <button class="secondary" onclick="setCmd('@hub write tweet about x402 mcp hub')">Write</button>
-        </div>
-
-        <div class="card">
-          <h2>Execution result</h2>
-          <div id="summary" class="resultBox">Waiting for command...</div>
-        </div>
-
-        <div class="card">
-          <h2>Payment proof</h2>
-          <div id="payment" class="resultBox">No payment yet.</div>
-        </div>
+    <div>
+      <div class="panel">
+        <div class="label">Provider registry</div>
+        <input id="providerUrl" value="http://localhost:5000" />
+        <button onclick="registerProvider()">register provider</button>
+        <button class="secondary" onclick="syncProviders()">sync</button>
+        <div id="providers" class="result">no provider loaded</div>
       </div>
-
-      <div>
-        <div class="card">
-          <h2>Register provider</h2>
-          <input id="providerUrl" value="http://localhost:5000" />
-          <button onclick="registerProvider()">Register</button>
-          <button class="secondary" onclick="loadProviders()">Providers</button>
-          <div id="providers" class="resultBox" style="margin-top:12px;">No provider loaded.</div>
-        </div>
-
-        <div class="card">
-          <h2>Marketplace</h2>
-          <button onclick="loadMarketplace()">Refresh services</button>
-          <div id="marketplace" class="services" style="margin-top:12px;"></div>
-        </div>
+      <div class="panel">
+        <div class="label">Ranked marketplace</div>
+        <button onclick="loadMarketplace()">refresh</button>
+        <button class="secondary" onclick="clearLogs()">clear logs</button>
+        <div id="marketplace" class="services"></div>
       </div>
     </div>
   </div>
+</div>
 
 <script>
 const api = "http://localhost:3001";
 
-function setCmd(v) {
-  document.getElementById("mention").value = v;
-}
+function setCmd(v){ document.getElementById("mention").value = v; }
+function resetSteps(){ ["s1","s2","s3","s4","s5"].forEach(id=>document.getElementById(id).className="step"); }
+function ok(id){ document.getElementById(id).className="step ok"; }
+function skip(id){ document.getElementById(id).className="step skip"; }
+function decodePayment(r){ try { return r ? JSON.parse(atob(r)) : null; } catch { return null; } }
 
-function resetSteps() {
-  ["s1","s2","s3","s4","s5"].forEach(id => document.getElementById(id).className = "step");
-}
-function ok(id) { document.getElementById(id).className = "step ok"; }
-
-function decodePayment(response) {
-  if (!response) return null;
-  try { return JSON.parse(atob(response)); } catch { return null; }
-}
-
-function txLink(tx) {
-  return `https://sepolia.basescan.org/tx/${tx}`;
-}
-
-async function invoke() {
+async function invoke(){
   resetSteps();
-  document.getElementById("summary").textContent = "Running...";
-  document.getElementById("payment").textContent = "Waiting for payment status...";
+  summary.innerHTML = "routing request...";
+  payment.innerHTML = "waiting...";
+  const text = mention.value;
 
-  const text = document.getElementById("mention").value;
   const res = await fetch(`${api}/invoke`, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ text })
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({text})
   });
-
   const data = await res.json();
-  ok("s1"); ok("s2");
-
   const p = data.execution?.payment || {};
-  if (p.required) ok("s3");
-  if (p.status === "paid_with_x402_client") ok("s4");
-  if (data.execution?.ok) ok("s5");
-
-  document.getElementById("summary").innerHTML = `
-<div class="${data.execution?.ok ? "success" : "fail"}">${data.execution?.ok ? "EXECUTION SUCCESS" : "EXECUTION FAILED"}</div>
-<div class="kv"><div class="k">Intent</div><div class="v">${data.detectedIntent}</div></div>
-<div class="kv"><div class="k">Service</div><div class="v">${data.selectedService?.id || "-"}</div></div>
-<div class="kv"><div class="k">Type</div><div class="v">${data.selectedService?.type || "-"}</div></div>
-<div class="kv"><div class="k">Result</div><div class="v">${data.execution?.result || data.execution?.error || "-"}</div></div>
-`;
-
   const decoded = decodePayment(p.response);
-  if (decoded) {
-    document.getElementById("payment").innerHTML = `
-<div class="success">PAYMENT SETTLED</div>
-<div class="kv"><div class="k">Protocol</div><div class="v">x402</div></div>
-<div class="kv"><div class="k">Network</div><div class="v">${decoded.network}</div></div>
-<div class="kv"><div class="k">Payer</div><div class="v">${decoded.payer}</div></div>
-<div class="kv"><div class="k">Tx</div><div class="v"><a href="${txLink(decoded.transaction)}" target="_blank">${decoded.transaction}</a></div></div>
-`;
+
+  ok("s1"); ok("s2");
+  if(p.required){ ok("s3"); if(p.status === "paid_with_x402_client") ok("s4"); }
+  else { skip("s3"); skip("s4"); }
+  if(data.execution?.ok) ok("s5");
+
+  summary.innerHTML = `
+    <div class="${data.execution?.ok ? "success" : "fail"}">${data.execution?.ok ? "execution success" : "execution failed"}</div>
+    <div class="row"><div class="k">intent</div><div class="v">${data.detectedIntent}</div></div>
+    <div class="row"><div class="k">service</div><div class="v">${data.selectedService?.id || "-"}</div></div>
+    <div class="row"><div class="k">type</div><div class="v">${data.selectedService?.type || "-"}</div></div>
+    <div class="row"><div class="k">attempts</div><div class="v">${(data.attempts || []).map(a => a.service).join(", ")}</div></div>
+    <div class="row"><div class="k">result</div><div class="v">${data.execution?.result || data.execution?.error || "-"}</div></div>
+  `;
+
+  if(decoded){
+    payment.innerHTML = `
+      <div class="success">payment settled</div>
+      <div class="row"><div class="k">network</div><div class="v">${decoded.network}</div></div>
+      <div class="row"><div class="k">payer</div><div class="v">${decoded.payer}</div></div>
+      <div class="row"><div class="k">tx</div><div class="v"><a target="_blank" href="https://sepolia.basescan.org/tx/${decoded.transaction}">${decoded.transaction}</a></div></div>
+    `;
   } else {
-    document.getElementById("payment").textContent = JSON.stringify(p, null, 2);
+    payment.innerHTML = `<div class="muted">${p.status || "no payment required"}</div>`;
   }
+
+  loadAnalytics();
 }
 
-async function registerProvider() {
-  const url = document.getElementById("providerUrl").value;
+async function registerProvider(){
   const res = await fetch(`${api}/providers/register`, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ url })
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({url:providerUrl.value})
   });
   const data = await res.json();
-  document.getElementById("providers").textContent =
-    `Provider: ${data.provider?.url}\nStatus: ${data.provider?.status}\nImported tools: ${data.imported?.length || 0}`;
-  await loadMarketplace();
+  providers.innerHTML = `<div class="success">${data.provider.status}</div><div class="muted">${data.provider.url}</div><div>imported tools: ${data.imported.length}</div>`;
+  loadMarketplace(); loadAnalytics();
 }
 
-async function loadProviders() {
-  const res = await fetch(`${api}/providers`);
+async function syncProviders(){
+  const res = await fetch(`${api}/providers/sync`, {method:"POST"});
   const data = await res.json();
-  document.getElementById("providers").textContent =
-    data.providers.map(p => `${p.id}\n${p.url}\n${p.status}\nTools: ${p.tools.length}`).join("\n\n");
+  providers.innerHTML = data.results.map(r => `<div>${r.url} | ${r.ok ? "online" : "offline"} | imported ${r.imported || 0}</div>`).join("");
+  loadMarketplace();
 }
 
-async function loadMarketplace() {
-  const serviceRes = await fetch(`${api}/services`);
-  const serviceData = await serviceRes.json();
+async function loadMarketplace(){
+  const [servicesRes, healthRes] = await Promise.all([
+    fetch(`${api}/services`),
+    fetch(`${api}/health/services`)
+  ]);
+  const serviceData = await servicesRes.json();
+  const healthData = await healthRes.json();
+  const healthMap = Object.fromEntries(healthData.results.map(h => [h.id, h]));
 
-  let healthMap = {};
-  try {
-    const healthRes = await fetch(`${api}/health/services`);
-    const healthData = await healthRes.json();
-    healthMap = Object.fromEntries(healthData.results.map(h => [h.id, h]));
-  } catch {}
-
-  document.getElementById("marketplace").innerHTML = serviceData.services.map(s => {
+  marketplace.innerHTML = serviceData.services.map(s => {
     const h = healthMap[s.id];
-    const health = h?.ok ? "online" : "offline";
-    const color = h?.ok ? "#86efac" : "#fca5a5";
-
+    const status = h?.ok ? "online" : "offline";
     return `
       <div class="service">
-        <h3>${s.id}</h3>
-        <div class="muted">${s.type} | score ${s.score ?? "n/a"}</div>
-        <div class="muted">$${s.price} | ${s.latency}ms | rep ${s.reputation}</div>
-        <div class="muted" style="color:${color};font-weight:800;">${health}</div>
-        <div>${s.tags.map(t => `<span class="pill">${t}</span>`).join(" ")}</div>
+        <div class="serviceTop">
+          <h3>${s.id}</h3>
+          <span class="${status}">${status}</span>
+        </div>
+        <div class="muted">${s.type} | score ${s.score} | $${s.price} | ${s.latency}ms | rep ${s.reputation}</div>
+        <div>${s.tags.map(t=>`<span class="pill">${t}</span>`).join("")}</div>
       </div>
     `;
   }).join("");
 }
 
-loadMarketplace();
-loadProviders();
+async function loadProviders(){
+  const res = await fetch(`${api}/providers`);
+  const data = await res.json();
+  providers.innerHTML = data.providers.map(p => `<div class="success">${p.status}</div><div>${p.url}</div><div class="muted">tools: ${p.tools.length}</div>`).join("<br>");
+}
+
+async function loadAnalytics(){
+  const res = await fetch(`${api}/analytics`);
+  const data = await res.json();
+  const a = data.analytics;
+  stProviders.textContent = a.totalProviders;
+  stServices.textContent = a.totalServices;
+  stPaid.textContent = a.paidInvocations;
+}
+
+async function clearLogs(){
+  await fetch(`${api}/logs`, {method:"DELETE"});
+  loadAnalytics();
+}
+
+loadMarketplace(); loadProviders(); loadAnalytics();
 </script>
 </body>
 </html>
