@@ -131,6 +131,95 @@ app.get("/logs", (req, res) => {
 });
 
 
+app.post("/providers/import-tools", async (req, res) => {
+  const providerUrl = req.body.providerUrl;
+
+  if (!providerUrl) {
+    return res.status(400).json({
+      ok: false,
+      error: "providerUrl is required"
+    });
+  }
+
+  try {
+    const response = await fetch(`${providerUrl}/mcp/tools`);
+    const data = await response.json();
+
+    const imported = [];
+
+    for (const tool of data.tools || []) {
+      const service = registerService({
+        id: `${data.provider}-${tool.name}`,
+        type: tool.type,
+        tags: tool.tags || [tool.name],
+        price: Number(tool.price || 0),
+        latency: 300,
+        reputation: 90,
+        endpoint: tool.endpoint
+      });
+
+      imported.push(service);
+    }
+
+    res.json({
+      ok: true,
+      provider: data.provider,
+      imported
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+
+
+
+app.post("/providers/import-tools", async (req, res) => {
+  const providerUrl = req.body.providerUrl;
+
+  if (!providerUrl) {
+    return res.status(400).json({
+      ok: false,
+      error: "providerUrl is required"
+    });
+  }
+
+  try {
+    const response = await fetch(`${providerUrl}/mcp/tools`);
+    const data = await response.json();
+
+    const imported = [];
+
+    for (const tool of data.tools || []) {
+      const service = registerService({
+        id: `${data.provider}-${tool.name}`,
+        type: tool.type,
+        tags: tool.tags || [tool.name],
+        price: Number(tool.price || 0),
+        latency: 300,
+        reputation: 90,
+        endpoint: tool.endpoint
+      });
+
+      imported.push(service);
+    }
+
+    res.json({
+      ok: true,
+      provider: data.provider,
+      imported
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
 app.get("/health/services", async (req, res) => {
   const results = [];
 

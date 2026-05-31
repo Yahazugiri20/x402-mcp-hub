@@ -65,5 +65,32 @@
     "latency": 320,
     "reputation": 93,
     "endpoint": "http://localhost:4001/research"
+  },
+  {
+    "id": "auto-mcp-provider-summarize",
+    "type": "x402",
+    "tags": [
+      "summarize",
+      "summary",
+      "url",
+      "article"
+    ],
+    "price": 0.01,
+    "latency": 300,
+    "reputation": 90,
+    "endpoint": "http://localhost:4001/summarize"
+  },
+  {
+    "id": "auto-mcp-provider-research",
+    "type": "mcp",
+    "tags": [
+      "research",
+      "search",
+      "docs"
+    ],
+    "price": 0,
+    "latency": 300,
+    "reputation": 90,
+    "endpoint": "http://localhost:4001/research"
   }
 ]

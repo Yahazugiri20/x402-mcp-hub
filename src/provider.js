@@ -55,11 +55,35 @@ async function registerToHub() {
   }
 }
 
+app.get("/mcp/tools", (req, res) => {
+  res.json({
+    provider: "auto-mcp-provider",
+    tools: [
+      {
+        name: "summarize",
+        description: "Summarize a URL or text through x402 payment flow",
+        endpoint: "http://localhost:4001/summarize",
+        type: "x402",
+        price: 0.01,
+        tags: ["summarize", "summary", "url", "article"]
+      },
+      {
+        name: "research",
+        description: "Research docs, links, or topics for an agent",
+        endpoint: "http://localhost:4001/research",
+        type: "mcp",
+        price: 0,
+        tags: ["research", "search", "docs"]
+      }
+    ]
+  });
+});
+
 app.get("/", (req, res) => {
   res.json({
     name: "sample x402 MCP provider",
     status: "online",
-    routes: ["/summarize", "/research"]
+    routes: ["/summarize", "/research", "/mcp/tools"]
   });
 });
 
