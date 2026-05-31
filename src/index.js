@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { services, registerService } from "./registry.js";
-import { detectIntent, chooseService } from "./router.js";
+import { detectIntent, chooseService, getCandidateServices } from "./router.js";
 import { executeService } from "./executor.js";
 import { searchMarketplace } from "./marketplace.js";
 import { addLog, getLogs } from "./logs.js";
@@ -160,8 +160,30 @@ app.post("/invoke", async (req, res) => {
   const text = req.body.text || "";
 
   const intent = detectIntent(text);
-  const selectedService = await chooseService(intent);
-  const execution = await executeService(selectedService, text);
+  const candidates = await getCandidateServices(intent);
+
+  let selectedService = null;
+  let execution = {
+    ok: false,
+    error: "no matching MCP, HTTP, or x402 service found"
+  };
+
+  const attempts = [];
+
+  for (const candidate of candidates) {
+    const result = await executeService(candidate, text);
+
+    attempts.push({
+      service: candidate.id,
+      ok: result.ok,
+      error: result.error || null
+    });
+
+    selectedService = candidate;
+    execution = result;
+
+    if (result.ok) break;
+  }
 
   const log = addLog({
     source: "api",
@@ -169,6 +191,7 @@ app.post("/invoke", async (req, res) => {
     intent,
     service: selectedService?.id || null,
     serviceType: selectedService?.type || null,
+    attempts,
     payment: execution.payment || null,
     ok: execution.ok,
     result: execution.result || execution.error
@@ -177,8 +200,10 @@ app.post("/invoke", async (req, res) => {
   res.json({
     input: text,
     detectedIntent: intent,
+    candidates,
     selectedService,
     execution,
+    attempts,
     logId: log.id
   });
 });

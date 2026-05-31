@@ -16,6 +16,8 @@ export function detectIntent(text = "") {
 
 async function isOnline(service) {
   try {
+    if (!service.endpoint.startsWith("http")) return true;
+
     const url = new URL(service.endpoint);
     const baseUrl = `${url.protocol}//${url.host}`;
     await axios.get(baseUrl, { timeout: 1500 });
@@ -25,12 +27,10 @@ async function isOnline(service) {
   }
 }
 
-export async function chooseService(intent) {
+export async function getCandidateServices(intent) {
   const candidates = services.filter(service =>
     service.tags.includes(intent)
   );
-
-  if (!candidates.length) return null;
 
   const onlineCandidates = [];
 
@@ -39,7 +39,10 @@ export async function chooseService(intent) {
     if (online) onlineCandidates.push(service);
   }
 
-  if (!onlineCandidates.length) return null;
+  return rankServices(onlineCandidates);
+}
 
-  return rankServices(onlineCandidates)[0];
+export async function chooseService(intent) {
+  const ranked = await getCandidateServices(intent);
+  return ranked[0] || null;
 }
