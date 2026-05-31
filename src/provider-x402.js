@@ -86,27 +86,36 @@ app.get("/mcp/tools", (req, res) => {
     provider: "multi-tool-x402-provider",
     tools: [
       {
+        id: "real-x402-summarizer",
         name: "summarize",
         description: "Summarize a URL or text through real x402-express middleware",
         endpoint: "http://localhost:5000/summarize",
         type: "x402",
         price: 0.01,
+        latency: 180,
+        reputation: 98,
         tags: ["summarize", "summary", "url", "article"]
       },
       {
+        id: "free-mcp-researcher",
         name: "research",
         description: "Research docs, links, or topics for an agent",
         endpoint: "http://localhost:5000/research",
         type: "mcp",
         price: 0,
+        latency: 260,
+        reputation: 94,
         tags: ["research", "search", "docs"]
       },
       {
+        id: "paid-x402-tweet-writer",
         name: "write-tweet",
         description: "Write a short post through real x402-express middleware",
         endpoint: "http://localhost:5000/write-tweet",
         type: "x402",
         price: 0.005,
+        latency: 220,
+        reputation: 95,
         tags: ["write", "tweet", "post", "content"]
       }
     ]

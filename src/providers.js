@@ -63,7 +63,7 @@ export async function importProviderTools(url) {
 
   for (const tool of data.tools || []) {
     const service = registerService({
-      id: `${data.provider}-${tool.name}`,
+      id: tool.id || `${data.provider}-${tool.name}`,
       type: tool.type,
       tags: tool.tags || [tool.name],
       price: Number(tool.price || 0),
