@@ -8,6 +8,7 @@ import { addLog, getLogs } from "./logs.js";
 import { checkServiceHealth } from "./health.js";
 import { probeMcpServer } from "./mcpClient.js";
 import { registerProvider, getProviders } from "./providers.js";
+import { rankServices } from "./scoring.js";
 
 const app = express();
 app.use(cors());
@@ -82,7 +83,7 @@ app.post("/providers/register", async (req, res) => {
 });
 
 app.get("/services", (req, res) => {
-  res.json({ services });
+  res.json({ services: rankServices(services) });
 });
 
 
