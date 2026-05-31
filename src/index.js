@@ -1,0 +1,150 @@
+import express from "express";
+import cors from "cors";
+import { services, registerService } from "./registry.js";
+import { detectIntent, chooseService } from "./router.js";
+import { executeService } from "./executor.js";
+import { searchMarketplace } from "./marketplace.js";
+import { addLog, getLogs } from "./logs.js";
+import { checkServiceHealth } from "./health.js";
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const mentions = [];
+
+app.get("/", (req, res) => {
+  res.json({
+    name: "x402 MCP Hub",
+    status: "online",
+    idea: "agents discover MCP servers and invoke x402 services through one routing layer",
+    routes: ["/services", "/marketplace/search", "/invoke", "/x/mention", "/x/mentions", "/logs"]
+  });
+});
+
+app.get("/services", (req, res) => {
+  res.json({ services });
+});
+
+
+app.post("/services/register", (req, res) => {
+  const service = req.body;
+
+  if (!service.id || !service.type || !service.endpoint || !Array.isArray(service.tags)) {
+    return res.status(400).json({
+      ok: false,
+      error: "service must include id, type, endpoint, and tags array"
+    });
+  }
+
+  const registered = registerService({
+    id: service.id,
+    type: service.type,
+    tags: service.tags,
+    price: Number(service.price || 0),
+    latency: Number(service.latency || 500),
+    reputation: Number(service.reputation || 80),
+    endpoint: service.endpoint
+  });
+
+  res.json({
+    ok: true,
+    registered
+  });
+});
+
+
+app.get("/marketplace/search", (req, res) => {
+  const query = req.query.q || "";
+  const results = searchMarketplace(query);
+  res.json({ query, results });
+});
+
+app.post("/invoke", async (req, res) => {
+  const text = req.body.text || "";
+
+  const intent = detectIntent(text);
+  const selectedService = await chooseService(intent);
+  const execution = await executeService(selectedService, text);
+
+  const log = addLog({
+    source: "api",
+    input: text,
+    intent,
+    service: selectedService?.id || null,
+    serviceType: selectedService?.type || null,
+    payment: execution.payment || null,
+    ok: execution.ok,
+    result: execution.result || execution.error
+  });
+
+  res.json({
+    input: text,
+    detectedIntent: intent,
+    selectedService,
+    execution,
+    logId: log.id
+  });
+});
+
+app.post("/x/mention", async (req, res) => {
+  const text = req.body.text || "";
+  const intent = detectIntent(text);
+  const selectedService = await chooseService(intent);
+  const execution = await executeService(selectedService, text);
+
+  const mention = {
+    id: mentions.length + 1,
+    source: "fake_x",
+    text,
+    intent,
+    selectedService,
+    execution,
+    reply: execution.ok
+      ? `@user ${execution.result}`
+      : `@user sorry, no matching service found`
+  };
+
+  mentions.push(mention);
+
+  const log = addLog({
+    source: "fake_x",
+    input: text,
+    intent,
+    service: selectedService?.id || null,
+    serviceType: selectedService?.type || null,
+    payment: execution.payment || null,
+    ok: execution.ok,
+    result: execution.result || execution.error,
+    reply: mention.reply
+  });
+
+  res.json({ ...mention, logId: log.id });
+});
+
+app.get("/x/mentions", (req, res) => {
+  res.json({ mentions });
+});
+
+app.get("/logs", (req, res) => {
+  res.json({ logs: getLogs() });
+});
+
+
+app.get("/health/services", async (req, res) => {
+  const results = [];
+
+  for (const service of services) {
+    results.push(await checkServiceHealth(service));
+  }
+
+  res.json({ results });
+});
+
+
+app.listen(3001, () => {
+  console.log("");
+  console.log("x402 MCP Hub running");
+  console.log("API: http://localhost:3001");
+  console.log("");
+});

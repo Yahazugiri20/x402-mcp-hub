@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>x402 MCP Hub</title>
+  <style>
+    body {
+      background: #0b0f17;
+      color: #e5e7eb;
+      font-family: Arial, sans-serif;
+      padding: 40px;
+    }
+    .card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 70%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #374151;
+      background: #030712;
+      color: white;
+    }
+    button {
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #2563eb;
+      color: white;
+    }
+    pre {
+      white-space: pre-wrap;
+      background: #030712;
+      padding: 16px;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>x402 MCP Hub</h1>
+  <p>agent mention router for MCP servers and x402 services</p>
+
+  <div class="card">
+    <h2>fake X mention</h2>
+    <input id="mention" value="@hub summarize https://example.com" />
+    <button onclick="sendMention()">send</button>
+  </div>
+
+  <div class="card">
+    <h2>result</h2>
+    <pre id="result">waiting...</pre>
+  </div>
+
+  <div class="card">
+    <h2>marketplace</h2>
+    <button onclick="loadServices()">load services</button>
+    <pre id="services">click load services</pre>
+  </div>
+
+  <script>
+    async function sendMention() {
+      const text = document.getElementById("mention").value;
+      const res = await fetch("http://localhost:3001/x/mention", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ text })
+      });
+      const data = await res.json();
+      document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function loadServices() {
+      const res = await fetch("http://localhost:3001/services");
+      const data = await res.json();
+      document.getElementById("services").textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
